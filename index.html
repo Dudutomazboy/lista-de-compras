@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brigadeiro Calculator</title>
+<style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      color: #6a5acd;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1.2rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    #resultado {
+      margin-top: 2rem;
+    }
+
+    #resultado > div {
+      margin-bottom: 2rem;
+      background-color: #fff;
+      padding: 1rem;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    h3 {
+      color: #6a5acd;
+    }
+
+    p {
+      margin: 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+    <label for="aumentoQuantidade">Rendimento por receita:</label>
+    <input type="number" id="aumentoQuantidade" value="1" min="1" oninput="atualizarStep()">
+    <label for="quantidade">Quantidade de encomenda:</label>
+     <input type="number" id="quantidade" value="0" step="25">
+    <br> 
+    <label for="valor">Valor por carga:</label>
+    <input type="number" id="valor" value="0">
+    <br> 
+    <button id="aumentar" onclick="alterarQuantidade(1)">+</button> 
+    <button id="diminuir" onclick="alterarQuantidade(-1)">-</button> 
+    <br> 
+    <button onclick="adicionarItemCarga()">Aumenta carga</button>
+    <button onclick="calcular()">Calcular</button>
+    <div id="resultado"></div> 
+    <h2>Carga</h2> 
+    <ul id="listaCarga"></ul>
+
+    <script>
+const quantidades = [];
+
+function calcularCompras(quantidade, valor, aumento, aumentoQuantidade) {
+    const quantidadeReal = quantidade / aumentoQuantidade;
+    const totalLeiteCondensado = quantidadeReal;
+    const totalCremeDeLeite = quantidadeReal;
+    const totalManteiga = quantidadeReal;
+    const totalChocolate = quantidadeReal;
+    const totalGlucose = quantidadeReal;
+    const totalCarga = quantidadeReal;
+    const totalGasto = totalLeiteCondensado * 9 + totalCremeDeLeite * 2 + totalManteiga * 2 + totalChocolate * 4 + totalGlucose * 1 + totalCarga * valor;
+    return {
+        total: {
+            leiteCondensado: totalLeiteCondensado,
+            cremeDeLeite: totalCremeDeLeite,
+            manteiga: totalManteiga,
+            chocolate: totalChocolate,
+            glucose: totalGlucose,
+            carga: totalCarga
+        },
+        gasto: totalGasto
+    };
+}
+
+function alterarQuantidade(delta) {
+    const quantidadeInput = document.getElementById('quantidade');
+    let quantidade = parseInt(quantidadeInput.value) || 0;
+    const aumentoInput = document.getElementById('aumentoQuantidade');
+    const aumento = parseInt(aumentoInput.value) || 1;
+    quantidade += delta * aumento;
+    quantidade = Math.max(quantidade, 0);
+    quantidadeInput.value = quantidade;
+}
+
+function atualizarStep() {
+    const aumentoInput = document.getElementById('aumentoQuantidade');
+    const aumento = parseInt(aumentoInput.value) || 1;
+    const quantidadeInput = document.getElementById('quantidade');
+    quantidadeInput.step = aumento;
+}
+
+function exibirResultados(resultados) {
+    const resultadoDiv = document.getElementById('resultado');
+    let resultadoTexto = '';
+    for (const ingrediente in resultados.total) {
+        resultadoTexto += `${ingrediente}: ${resultados.total[ingrediente]}<br>`;
+    }
+    resultadoTexto += `Total gasto: R$${resultados.gasto.toFixed(2)}`;
+    resultadoDiv.innerHTML = resultadoTexto;
+}
+
+function adicionarItemCarga() {
+    const valorInput = document.getElementById('valor');
+    const valor = parseFloat(valorInput.value);
+    const novoValor = valor + 1;
+    valorInput.value = novoValor;
+}
+
+function calcular() {
+    const quantidadeInput = document.getElementById('quantidade');
+    const quantidade = parseInt(quantidadeInput.value) || 0;
+    const valorInput = document.getElementById('valor');
+    const valor = parseFloat(valorInput.value) || 0;
+    const aumentoQuantidadeInput = document.getElementById('aumentoQuantidade');
+    const aumentoQuantidade = parseInt(aumentoQuantidadeInput.value) || 1;
+    
+    if (quantidade > 0 && aumentoQuantidade > 0) {
+        const resultados = calcularCompras(quantidade, valor, 1, aumentoQuantidade); // 1 passado como aumento para evitar divisão por zero
+        
+        exibirResultados(resultados);
+    } else {
+        const resultadoDiv = document.getElementById('resultado');
+        resultadoDiv.innerHTML = 'Por favor, insira valores válidos para a quantidade e o rendimento.';
+    }
+}
+</script>
+</body>
+</html>
