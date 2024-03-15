@@ -78,8 +78,12 @@ function calcularCompras(quantidade, valor, aumento, aumentoQuantidade) {
     const totalManteiga = quantidadeReal;
     const totalChocolate = quantidadeReal;
     const totalGlucose = quantidadeReal;
+    const totalEmbalagens = quantidadeReal;
     const totalCarga = quantidadeReal;
-    const totalGasto = totalLeiteCondensado * 9 + totalCremeDeLeite * 2 + totalManteiga * 2 + totalChocolate * 4 + totalGlucose * 1 + totalCarga * valor;
+    const totalGasto = totalLeiteCondensado * 9 + totalCremeDeLeite * 2 + totalManteiga * 2 + totalChocolate * 4 + totalGlucose * 1 + totalEmbalagens * 2 + totalCarga * valor ;
+    const totalValorReceitaPorRendimento = totalGasto / aumentoQuantidade;
+    const totalValorUnitario = totalValorReceitaPorRendimento * 3;
+ 
     return {
         total: {
             leiteCondensado: totalLeiteCondensado,
@@ -87,12 +91,15 @@ function calcularCompras(quantidade, valor, aumento, aumentoQuantidade) {
             manteiga: totalManteiga,
             chocolate: totalChocolate,
             glucose: totalGlucose,
-            carga: totalCarga
+            carga: totalCarga,
+            embalagens: totalEmbalagens
         },
-        gasto: totalGasto
+        gasto: totalGasto,
+        valorReceitaPorRendimento: totalValorReceitaPorRendimento,
+        valorUnitario: totalValorUnitario
+        
     };
 }
-
 function alterarQuantidade(delta) {
     const quantidadeInput = document.getElementById('quantidade');
     let quantidade = parseInt(quantidadeInput.value) || 0;
@@ -116,7 +123,9 @@ function exibirResultados(resultados) {
     for (const ingrediente in resultados.total) {
         resultadoTexto += `${ingrediente}: ${resultados.total[ingrediente]}<br>`;
     }
-    resultadoTexto += `Total gasto: R$${resultados.gasto.toFixed(2)}`;
+    resultadoTexto += `Total gasto: R$${resultados.gasto.toFixed(2)}<br>`;
+    resultadoTexto += `Custo unitário: R$${resultados.valorReceitaPorRendimento.toFixed(2)}<br>`;
+    resultadoTexto += `Valor unitário: R$${resultados.valorUnitario.toFixed(2)}`;
     resultadoDiv.innerHTML = resultadoTexto;
 }
 
